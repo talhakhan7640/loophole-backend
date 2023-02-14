@@ -7,35 +7,60 @@ export const userRegistrationController = (request, response) => {
   const username = request.body.username;
   const userEmail = request.body.email;
   const userPassword = request.body.password;
-  bcrypt
-    .hash(userPassword, saltRounds)
-    .then((hashedPassword) => {
-      const user = new userModel({
-        username: username,
-        email: userEmail,
-        password: hashedPassword,
-      });
 
-      user
-        .save()
-        .then((result) => {
-          response.status(201).send({
-            message: "User has been created successfully!",
-            result,
-          });
-        })
-        .catch((error) => {
-          response.status(500).send({
-            message: "Something went wrong! User could not be created!",
-          });
+  userModel.findOne({ username: username }, function (err, document) {
+    if (document) {
+      if (userEmail == document.email) {
+        response.send({
+          message: "Username and Email already exist",
         });
-    })
-    .catch((e) => {
-      response.status(500).send({
-        message: "Something went wrong! Password could be hashed successfully!",
-        e,
+      } else {
+        response.send({
+          message: "Username already exist",
+        });
+      }
+    } else {
+      userModel.findOne({ email: userEmail }, function (err, document) {
+        if (document) {
+          return response.send({
+            message: "Email already exist",
+          });
+        } else {
+          bcrypt
+            .hash(userPassword, saltRounds)
+            .then((hashedPassword) => {
+              const user = new userModel({
+                username: username,
+                email: userEmail,
+                password: hashedPassword,
+              });
+              
+              user
+                .save()
+                .then((result) => {
+                  response.status(201).send({
+                    message: "User has been created successfully!",
+                    result,
+                  });
+                })
+                .catch((error) => {
+                  response.status(500).send({
+                    message: "Something went wrong! User could not be created!",
+                    error,
+                  });
+                });
+            })
+            .catch((e) => {
+              response.status(500).send({
+                message:
+                  "Something went wrong! Password could be hashed successfully!",
+                e,
+              });
+            });
+        }
       });
-    });
+    }
+  });
 };
 
 export const userLoginController = (request, response) => {
