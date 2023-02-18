@@ -2,7 +2,7 @@ import userModel from "../models/userModels.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
-export const userRegistrationController = (error, request, response, next) => {
+export const userRegistrationController = (request, response) => {
   const saltRounds = 10;
   const username = request.body.username;
   const userEmail = request.body.email;
