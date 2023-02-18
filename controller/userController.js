@@ -2,7 +2,7 @@ import userModel from "../models/userModels.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
-export const userRegistrationController = (request, response) => {
+export const userRegistrationController = (error, request, response, next) => {
   const saltRounds = 10;
   const username = request.body.username;
   const userEmail = request.body.email;
@@ -11,11 +11,11 @@ export const userRegistrationController = (request, response) => {
   userModel.findOne({ username: username }, function (err, document) {
     if (document) {
       if (userEmail == document.email) {
-        response.send({
-          message: "Username and Email already exist",
-        });
+        // next({error : "Username and Email already exist"})
+        response.status(409).send({message: 'Username and Email already exist!'});
+        throw new Error('Username and Email are already there!')
       } else {
-        response.send({
+        return response.send({
           message: "Username already exist",
         });
       }
