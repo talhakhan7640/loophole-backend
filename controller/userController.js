@@ -51,7 +51,7 @@ export const userRegistrationController = (request, response) => {
             .catch((e) => {
               response.status(500).send({
                 message:
-                  "Something went wrong! Password could be hashed successfully!",
+                  "Something went wrong! Password could not be hashed successfully!",
                 e,
               });
             });
