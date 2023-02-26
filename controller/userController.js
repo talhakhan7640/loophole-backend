@@ -11,7 +11,7 @@ export const userRegistrationController = (request, response) => {
   userModel.findOne({ username: username }, function (err, document) {
     if (document) {
       if (userEmail == document.email) {
-        response.status(409).json({message: 'Username and Email already exist!'})
+        response.status(409).json({ message: 'Username and Email already exist!' })
       } else {
         return response.send({
           message: "Username already exist",
